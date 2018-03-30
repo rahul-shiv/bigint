@@ -1,0 +1,81 @@
+Rahuls-MacBook-Air:dass rahulshiv$ ./a.out
+First intal: 239
+Second intal: 423
+Two intals after increment and decrement:
+239
+423
+Max of two intals: 423
+Sum: 662
+Diff: 184
+enter x:239 y:423
+1
+enter x:2 y:4
+
+prodsing 8
+3
+enter x:39 y:23
+1
+enter x:3 y:2
+
+prodsing 6
+3
+enter x:9 y:3
+
+prodsing 27
+2
+enter x:12 y:5
+1
+enter x:1 y:0
+
+prodsing 0
+3
+enter x:2 y:5
+
+prodsing 10
+2
+enter x:3 y:5
+
+prodsing 15
+temp15
+temp15
+yolo x:12  y:05   xl:1   xr:2   yl:0   yr:5
+xgolo c1:0 c2:15 c3:10
+ngolo c1:000 c2:50 c3:10
+
+prod 60
+temp54
+temp127
+yolo x:39  y:23   xl:3   xr:9   yl:2   yr:3
+xgolo c1:6 c2:60 c3:27
+ngolo c1:600 c2:270 c3:27
+
+prod 897
+2
+enter x:41 y:27
+1
+enter x:4 y:2
+
+prodsing 8
+3
+enter x:1 y:7
+
+prodsing 7
+2
+enter x:5 y:9
+
+prodsing 45
+temp37
+temp130
+yolo x:41  y:27   xl:4   xr:1   yl:2   yr:7
+xgolo c1:8 c2:45 c3:7
+ngolo c1:800 c2:300 c3:7
+
+prod 1107
+temp10;9
+temp1222
+yolo x:239  y:423   xl:2   xr:39   yl:4   yr:23
+xgolo c1:8 c2:1107 c3:897
+ngolo c1:80000 c2:22200 c3:897
+
+prod 103097
+Product: 103097
