@@ -110,19 +110,25 @@ void * intal_increment(void* intal){
     return intal_add( intal, intal1);
 }
 
-int is_smaller(bigint * intal1, bigint * intal2)
+static int is_smaller(bigint * intal1, bigint * intal2)
 {
     int n1 = intal1->len, n2 = intal2->len;
-
-    if (n1 < n2)
+    int i=0,x=0,y=0;
+    while((intal1->arr)[i++]==0)
+        x++;
+    i=0;
+    while((intal2->arr)[i++]==0)
+        y++;
+    // printf("%s,%s,")
+    if (n1 - x < n2 - y)
         return 1;
-    if (n1 > n2)
+    if (n1 - x> n2 - y)
         return 0;
-    for (int i=0; i<n1; i++)
+    for (int i=0; i<n1-x; i++)
     {
-        if ((intal1->arr)[i] < (intal2->arr)[i])
+        if ((intal1->arr)[i+x] < (intal2->arr)[i+y])
             return 1;
-        else if ((intal1->arr)[i] > (intal2->arr)[i])
+        else if ((intal1->arr)[i+x] > (intal2->arr)[i+y])
             return 0;
     }
     return 0;
@@ -324,28 +330,112 @@ void * intal_multiply(void* intal1, void* intal2){
 }
 
 void* intal_divide(void* intal1, void* intal2){
+
     if (intal1 == NULL || intal2 == NULL|| intal2 == 0)
         return NULL;
     bigint * dividend = (bigint *)intal1;
     bigint * divisor = (bigint *)intal2;
+    while((divisor->arr)[0]==0 && (divisor->len)!=1){
+        (divisor->len)--;
+        (divisor->arr)++;
+        divisor->offset += 1;
+    }
     int n = divisor->len;
     int m = dividend->len;
-    int i=0;
-    bigint * rem = (bigint *)malloc(sizeof(bigint));
+    bigint * q = (bigint*)malloc(sizeof(bigint));
+    q->len = m - n + 1;
+    q->arr = (int*)malloc(sizeof(int) * (q->len));
+    q->offset = 0;
+    bigint * rem = (bigint*)malloc(sizeof(bigint));
     rem->len = n;
-    rem->arr = (int *)malloc(sizeof(int)*n);
-    bigint * q = (bigint *)malloc(sizeof(bigint));
-    q->arr = (int *)malloc(sizeof(int)*(m-n+1));
-    for(int j = 0; j < n; j++){
-        (rem->arr)[j]=(dividend->arr)[j];
+    rem->arr = (int*)malloc(sizeof(int) * (n+1));
+    for(int i = 0; i < n; i++){
+        (rem->arr)[i] = (dividend->arr)[i];
     }
-    while(i+n<m){
+    int i=0;
+    bigint * chk=intal_create("1");
+    while(n+i<=m){
         bigint * temp = rem;
-        if(intal_compare(temp,divisor)==-1){
-            temp->len += 1;
-            temp->arr = (int *)realloc(temp->arr,sizeof(int)*(temp->len));
-            (temp->arr)[temp->len]=(dividend->arr)[temp->len+i];
+        // printf("\n%d temp %s",i,intal2str(temp));
+        if((intal_compare(temp,divisor) == -1||is_smaller(temp,chk))&&i+n!=m){
+            rem->len+=1;
+            // printf("\nxolo%d,%d",i,(dividend->arr)[i+n]);
+            (rem->arr)[rem->len-1]=(dividend->arr)[i+n];
+            (q->arr)[i]=0;
+        }
+        else{
+            int k = 0;
+            bigint * tempq = (bigint *)malloc(sizeof(bigint));
+            tempq = intal_create("0");
+            while(intal_compare(tempq,temp) == -1){
+                bigint * sum = intal_add(tempq,divisor);
+                k += 1;
+                intal_destroy(tempq);
+                tempq=sum;
+                // printf("\ntemp%s, tempq%s, i%d, k%d\n",intal2str(temp),intal2str(tempq),i,k);
+            }
+            if(intal_compare(tempq,temp) == 0){
+                // printf("nohds\n");
+                rem->len=n;
+                for(int j = 0; j < n; j++)
+                    (rem->arr)[j]=0;
+                (q->arr)[i] = k;
+            }
+            else{
+                bigint* tempdiff = intal_diff(tempq,divisor);
+                intal_destroy(tempq);
+                tempq=tempdiff;
+                // printf("\n%dtempq%s",temp->len,intal2str(tempq));
+                int b = 0,d,z = 0;
+                int n1 = temp->len - 1, n2 = tempq->len - 1, flg;
+                if(intal_compare(temp,tempq)==1){
+                    while(z < n2 + 1){
+                        // printf("\ntemp%s,tempq%s",intal2str(temp),intal2str(tempq));
+                        d = (temp->arr)[n1 - z] - (tempq->arr)[n2 - z] - b ;
+
+                        if(d < 0){
+                            d = 10 + d;
+                            b = 1;
+                        }
+                        else{
+                            b = 0;
+                        }
+                        // printf("aaa%d,%d,%d\n",d,(temp->arr)[n1 - z ],(tempq->arr)[n2 - z]);
+                        (rem->arr)[n1 - z ]=d;
+                        z++;
+                    }
+                    while(z < n1 + 1){
+                        d = (temp->arr)[n1 - z] - b ;
+                        if(d < 0){
+                            d = 10 + d;
+                            b = 1;
+                        }
+                        else{
+                            b = 0;
+                        }
+                        (rem->arr)[n1 - z] = d;
+                        z++;
+                    }
+                    while((rem->arr)[0]==0 && (rem->len)!=1){
+                        z = 0;
+                        (rem->len)--;
+                        while(z < rem->len){
+                            (rem->arr)[z] = (rem->arr)[z + 1];
+                            z++;
+                        }
+                    }
+                    (rem->len)++;
+                    (rem->arr)[rem->len-1]=(dividend->arr)[i+n];
+                }
+                (q->arr)[i] = k - 1;
+            }
         }
         i++;
     }
+    while((q->arr)[0]==0 && (q->len)!=1){
+        (q->len)--;
+        (q->arr)++;
+        q->offset += 1;
+    }
+    return q;
 }

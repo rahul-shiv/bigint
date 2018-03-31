@@ -17,10 +17,17 @@ Quotient: 2
 
 #include <stdio.h>
 #include "intal.h"
+typedef struct big_int bigint;
 
+struct big_int{
+    int * arr;
+    int len;
+    int offset;
+};
 int main(int argc, char const *argv[]) {
-	char *str1 = "4999";
-	char *str2 = "2001";
+	char *str1 = "829537023852303259803259832";
+	char *str2 = "5378623578623958762375";
+
 	void *intal1;
 	void *intal2;
 	void *sum;
@@ -35,8 +42,9 @@ int main(int argc, char const *argv[]) {
 	printf("First intal: %s\n", intal2str(intal1)); //4999
 	printf("Second intal: %s\n", intal2str(intal2)); //2001
 
-	intal1 = intal_increment(intal1); //5000
-	intal2 = intal_decrement(intal2); //2000
+	// intal1 = intal_increment(intal1); //5000
+	// intal2 = intal_decrement(intal2); //2000
+
 
 	printf("Two intals after increment and decrement:\n");
 	printf("%s\n", intal2str(intal1)); //5000
@@ -54,8 +62,8 @@ int main(int argc, char const *argv[]) {
 	product = intal_multiply(intal1, intal2); //10000000
 	printf("Product: %s\n", intal2str(product));
 	//
-	// quotient = intal_divide(intal1, intal2); //2
-	// printf("Quotient: %s\n", intal2str(quotient));
+	quotient = intal_divide(intal1, intal2); //2
+	printf("Quotient: %s\n", intal2str(quotient));
 	//
 	// exp = intal_pow(intal1, quotient); //5000^2 = 25000000
 	// printf("%s ^ %s: %s\n", intal2str(intal1), intal2str(quotient), intal2str(exp));
@@ -64,7 +72,7 @@ int main(int argc, char const *argv[]) {
 	intal_destroy(sum);
 	intal_destroy(diff);
 	intal_destroy(product);
-	// intal_destroy(quotient);
+	intal_destroy(quotient);
 	// intal_destroy(exp);
 	intal_destroy(intal1);
 	intal_destroy(intal2);
